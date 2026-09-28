@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ITパスポート マスター</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ============================== -->
+<!-- ホーム画面 -->
+<!-- ============================== -->
+
+<div id="homeScreen" class="app">
+
+    <header>
+        <h1>📘 ITパスポート マスター</h1>
+        <p>ITパスポート試験 学習システム</p>
+    </header>
+
+    <main>
+
+        <!-- ユーザー選択 -->
+        <section class="card">
+
+            <h2>ユーザー</h2>
+
+            <select id="userSelect">
+            </select>
+
+            <button id="addUserBtn">
+                ➕ ユーザー追加
+            </button>
+
+        </section>
+
+
+        <!-- メニュー -->
+        <section class="card">
+
+            <button id="startBtn" class="mainButton">
+                ▶ 試験開始
+            </button>
+
+            <button id="resultBtn">
+                📊 成績
+            </button>
+
+            <button id="settingBtn">
+                ⚙ 設定
+            </button>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ============================== -->
+<!-- 試験画面 -->
+<!-- ============================== -->
+
+<div id="examScreen" class="app" style="display:none;">
+
+    <header>
+        <h1>ITパスポート マスター</h1>
+    </header>
+
+    <section class="card">
+
+        <div id="questionNumber">
+            問題 1 / 20
+        </div>
+
+        <div id="questionText">
+            問題文
+        </div>
+
+        <div id="choices">
+
+            <button class="choiceBtn">A</button>
+            <button class="choiceBtn">B</button>
+            <button class="choiceBtn">C</button>
+            <button class="choiceBtn">D</button>
+
+        </div>
+
+        <button id="nextBtn" class="mainButton">
+            次へ ▶
+        </button>
+
+    </section>
+
+</div>
+
+
+<!-- ============================== -->
+<!-- 問題データ -->
+<!-- ============================== -->
+
+<script src="questions/technology.js"></script>
+<script src="questions/strategy.js"></script>
+<script src="questions/management.js"></script>
+
+
+<!-- ============================== -->
+<!-- 共通機能 -->
+<!-- ============================== -->
+
+<script src="js/question-check.js"></script>
+
+<script src="js/storage.js"></script>
+<script src="js/exam.js"></script>
+<script src="js/settings.js"></script>
+<script src="app.js"></script>
+
+
+<!-- ============================== -->
+<!-- ユーザー管理 -->
+<!-- ============================== -->
+
+<script>
+
+    // ========================================
+    // ユーザー管理
+    // ========================================
+
+    const userSelect = document.getElementById("userSelect");
+    const addUserBtn = document.getElementById("addUserBtn");
+
+    // 保存されているユーザーを取得
+    let users =
+        JSON.parse(localStorage.getItem("itpassport_users")) || [
+            "学習者1"
+        ];
+
+    // 現在選択されているユーザー
+    let currentUser =
+        localStorage.getItem("itpassport_current_user") || users[0];
+
+
+    // ========================================
+    // ユーザー一覧を画面に表示
+    // ========================================
+
+    function renderUsers() {
+
+        userSelect.innerHTML = "";
+
+        users.forEach(user => {
+
+            const option = document.createElement("option");
+
+            option.value = user;
+            option.textContent = user;
+
+            userSelect.appendChild(option);
+        });
+
+        // 前回選択していたユーザーを復元
+        if (users.includes(currentUser)) {
+            userSelect.value = currentUser;
+        } else {
+            currentUser = users[0];
+            userSelect.value = currentUser;
+        }
+    }
+
+
+    // ========================================
+    // ユーザー選択変更
+    // ========================================
+
+    userSelect.addEventListener("change", () => {
+
+        currentUser = userSelect.value;
+
+        localStorage.setItem(
+            "itpassport_current_user",
+            currentUser
+        );
+
+        console.log(
+            "現在のユーザー：",
+            currentUser
+        );
+    });
+
+
+    // ========================================
+    // ユーザー追加
+    // ========================================
+
+    addUserBtn.addEventListener("click", () => {
+
+        const name = prompt(
+            "新しいユーザー名を入力してください。"
+        );
+
+        if (name === null) {
+            return;
+        }
+
+        const newUser = name.trim();
+
+        if (newUser === "") {
+            alert("ユーザー名を入力してください。");
+            return;
+        }
+
+        if (users.includes(newUser)) {
+            alert("そのユーザーはすでに登録されています。");
+            return;
+        }
+
+        users.push(newUser);
+
+        localStorage.setItem(
+            "itpassport_users",
+            JSON.stringify(users)
+        );
+
+        currentUser = newUser;
+
+        localStorage.setItem(
+            "itpassport_current_user",
+            currentUser
+        );
+
+        renderUsers();
+
+        userSelect.value = currentUser;
+
+        console.log(
+            "ユーザーを追加しました：",
+            currentUser
+        );
+    });
+
+
+    // ========================================
+    // 初期表示
+    // ========================================
+
+    renderUsers();
+
+    console.log(
+        "ユーザー管理 起動OK：",
+        currentUser
+    );
+
+</script>
+
+</body>
+</html>
