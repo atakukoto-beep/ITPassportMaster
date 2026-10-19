@@ -79,6 +79,16 @@ if (cancelExamBtn) {
                 examScreen.style.display = "block";
             }
 
+        // 試験開始時に中止ボタンを表示
+            if (cancelExamBtn) {
+                cancelExamBtn.style.display = "block";
+            }
+
+        // 次へボタンも表示
+            if (nextBtn) {
+                nextBtn.style.display = "block";
+            }
+
             if (typeof createExam === "function") {
                 createExam();
                 console.log("試験問題を作成しました");
