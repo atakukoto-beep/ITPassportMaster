@@ -26,6 +26,39 @@ window.addEventListener("DOMContentLoaded", () => {
     const examScreen = document.getElementById("examScreen");
     const nextBtn = document.getElementById("nextBtn");
 
+    // 試験中止ボタン
+const cancelExamBtn = document.getElementById("cancelExamBtn");
+
+if (cancelExamBtn) {
+    cancelExamBtn.addEventListener("click", () => {
+        const confirmed = confirm(
+            "試験を中止しますか？\n\n中止すると、今回の回答は破棄され、成績には記録されません。"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        answers = [];
+
+        if (examScreen) {
+            examScreen.style.display = "none";
+        }
+
+        if (homeScreen) {
+            homeScreen.style.display = "block";
+        }
+
+        cancelExamBtn.style.display = "none";
+
+        if (nextBtn) {
+            nextBtn.style.display = "none";
+        }
+
+        console.log("試験を中止しました");
+    });
+}
+
     // 試験開始
     if (startBtn) {
         startBtn.addEventListener("click", () => {
